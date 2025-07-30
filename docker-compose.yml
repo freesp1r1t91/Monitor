@@ -30,6 +30,7 @@ services:
         - KAFKA_BROKERS=redpanda:29092
         depends_on:
         - redpanda
+
     event-order:
         image: ghcr.io/freesp1r1t91/order-service:latest
         ports:
@@ -47,3 +48,44 @@ services:
             - redpanda
         environment:
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:29092
+
+     # Prometheus
+    prometheus:
+        image: prom/prometheus:latest
+        container_name: prometheus
+        ports:
+            - "9090:9090"   # Prometheus Web UI
+        volumes:
+            - ./prometheus.yml:/etc/prometheus/prometheus.yml
+            - prometheus_data:/prometheus
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--web.console.libraries=/etc/prometheus/console_libraries'
+            - '--web.console.templates=/etc/prometheus/consoles'
+            - '--storage.tsdb.retention.time=200h'
+            - '--web.enable-lifecycle'
+        depends_on:
+            - event-order
+            - event-delivery
+
+ # Grafana
+    grafana:
+        image: grafana/grafana:latest
+        container_name: grafana
+        ports:
+            - "3000:3000"   # Grafana Web UI
+        environment:
+            - GF_SECURITY_ADMIN_USER=admin
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+            - GF_USERS_ALLOW_SIGN_UP=false
+        volumes:
+            - grafana_data:/var/lib/grafana
+            - ./grafana/provisioning:/etc/grafana/provisioning
+        depends_on:
+            - prometheus
+
+
+volumes:
+ prometheus_data:
+ grafana_data:
