@@ -19,6 +19,14 @@ scrape_configs:
  - job_name: 'hexagonal-orders'
    metrics_path: '/actuator/prometheus'
    static_configs:
-     - targets: ['hexagonal-orders:8080']
+     - targets: ['event-order:8080']
+   scrape_interval: 10s
+   scrape_timeout: 5s
+
+ # Hexagonal delivery Application
+ - job_name: 'hexagonal-deliverys'
+   metrics_path: '/actuator/prometheus'
+   static_configs:
+     - targets: ['event-delivery:8080']
    scrape_interval: 10s
    scrape_timeout: 5s
