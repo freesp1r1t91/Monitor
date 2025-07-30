@@ -31,11 +31,7 @@ services:
         depends_on:
         - redpanda
     event-order:
-        build:                          #si se construye local
-            context: ./EventOrder       #
-            dockerfile: Dockerfile      #
-        image: order-service            #
-#        image: freesp1r1t91/order-service:latest    #si se descarga de hub
+        image: ghcr.io/freesp1r1t91/order-service:latest
         ports:
             - "8080:8080"
         depends_on:
@@ -44,11 +40,7 @@ services:
             - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:29092
 
     event-delivery:
-        build:                          #
-            context: ./EventDelivery    #
-            dockerfile: Dockerfile      #
-        image: event-service            #
-#        image: freesp1r1t91/order-service:latest    #si se descarga de hub        
+        image: ghcr.io/freesp1r1t91/event-service:latest        
         ports:
             - "8083:8080"
         depends_on:
