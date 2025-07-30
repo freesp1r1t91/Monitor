@@ -30,14 +30,14 @@ jobs:
         run: |
           mvn clean package
           mvn test
-          run: mvn verify
+          mvn verify
 
       - name: Build and test EventDelivery
         working-directory: ./EventDelivery
         run: |
           mvn clean package
           mvn test
-          run: mvn verify
+          mvn verify
 
   build-and-push-docker:
     needs: build-and-test
