@@ -31,6 +31,12 @@ jobs:
           mvn clean package
           mvn test
           mvn verify
+      
+      - name: Save EventOrder JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: eventorder-jar
+          path: EventOrder/target/*.jar
 
       - name: Build and test EventDelivery
         working-directory: ./EventDelivery
@@ -38,6 +44,12 @@ jobs:
           mvn clean package
           mvn test
           mvn verify
+
+      - name: Save EventDelivery JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: eventdelivery-jar
+          path: EventDelivery/target/*.jar
 
   build-and-push-docker:
     needs: build-and-test
