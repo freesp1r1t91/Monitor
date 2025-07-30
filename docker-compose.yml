@@ -1,0 +1,57 @@
+services:
+    redpanda:
+        image: redpandadata/redpanda:latest
+        container_name: redpanda
+        ports:
+        - "9092:9092" # Kafka API
+        - "9644:9644" # Admin API
+        - "8082:8082" # REST API
+        command:
+        - redpanda
+        - start
+        - --smp 1
+        - --memory 1G
+        - --reserve-memory 0M
+        - --overprovisioned
+        - --node-id 0
+        - --check=false
+        - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+        - --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+        - --pandaproxy-addr 0.0.0.0:8082
+        - --advertise-pandaproxy-addr localhost:8082
+        - --rpc-addr 0.0.0.0:33145
+        - --advertise-rpc-addr redpanda:33145
+    redpanda-console:
+        image: docker.redpanda.com/redpandadata/console:latest
+        container_name: redpanda-console
+        ports:
+        - "8081:8080" # Redpanda Console Web UI
+        environment:
+        - KAFKA_BROKERS=redpanda:29092
+        depends_on:
+        - redpanda
+    event-order:
+        build:                          #si se construye local
+            context: ./EventOrder       #
+            dockerfile: Dockerfile      #
+        image: order-service            #
+#        image: freesp1r1t91/order-service:latest    #si se descarga de hub
+        ports:
+            - "8080:8080"
+        depends_on:
+            - redpanda
+        environment:
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:29092
+
+    event-delivery:
+        build:                          #
+            context: ./EventDelivery    #
+            dockerfile: Dockerfile      #
+        image: event-service            #
+#        image: freesp1r1t91/order-service:latest    #si se descarga de hub        
+        ports:
+            - "8083:8080"
+        depends_on:
+            - redpanda
+        environment:
+            - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:29092
