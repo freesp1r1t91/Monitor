@@ -27,17 +27,7 @@ services:
         ports:
         - "8081:8080" # Redpanda Console Web UI
         environment:
-        - SPRING_PROFILES_ACTIVE=docker
-        - SPRING_KAFKA_BOOTSTRAP_SERVERS=redpanda:29092
-        - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
-        - SPRING_DATASOURCE_USERNAME=sa
-        - SPRING_DATASOURCE_PASSWORD=
-        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-        - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
-        - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
-        - MANAGEMENT_ENDPOINT_HEALTH_SHOW_COMPONENTS=always
-        - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
-        - MANAGEMENT_ENDPOINTS_WEB_BASE_PATH=/actuator
+        - KAFKA_BROKERS=redpanda:29092
         depends_on:
         - redpanda
 
