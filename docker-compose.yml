@@ -34,6 +34,8 @@ services:
     event-order:
         image: ghcr.io/freesp1r1t91/order-service:latest
         container_name: event-order
+        environment:
+            - spring.kafka.bootstrap-servers=redpanda:29092
         ports:
             - "8080:8080"
         depends_on:
@@ -41,7 +43,9 @@ services:
 
     event-delivery:
         image: ghcr.io/freesp1r1t91/event-service:latest   
-        container_name: event-delivery     
+        container_name: event-delivery 
+        environment:
+            - spring.kafka.bootstrap-servers=redpanda:29092    
         ports:
             - "8083:8080"
         depends_on:
@@ -64,7 +68,7 @@ services:
             - '--storage.tsdb.retention.time=200h'
             - '--web.enable-lifecycle'
         depends_on:
-            - hexagonal-orders
+            - event-order
 
 
  # Grafana
